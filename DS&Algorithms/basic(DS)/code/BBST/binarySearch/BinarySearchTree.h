@@ -1,16 +1,19 @@
 #pragma once
 #include"Student.h"
 #include"Operate.h"
+#include"Compare.h"
 #include<queue>
 #include<string>
 #include <algorithm> 
 #include<vector>
 #include<unordered_map>
-#define RED false
-#define BLACK true
 
 using namespace std;
 
+
+
+// ***********************************************************************
+//树节点
 template<class T>
 class Node
 {
@@ -21,12 +24,8 @@ public:
 	Node* right;
 	Node* parent;
 
-	int height = 1;  // AVL树特有属性
 
-
-	bool color = RED;  // RBTree 特有属性
-
-	Node() { }
+	Node() {}
 
 	Node(T ele, Node* parent = NULL) :Element(ele), parent(parent)
 	{
@@ -44,101 +43,124 @@ public:
 		return (this->left == NULL && this->right == NULL);
 	}
 
-	// 判断左右
-	bool IsLeft()
-	{
-		return (parent != NULL && this == parent->left);
-	}
-
-	bool IsRight()
-	{
-		return (parent != NULL && this == parent->right);
-	}
-
-	// 更新高度
-	// AVL树特有属性
-	void updateHeight() {  
-		int leftHeight = left == NULL ? 0 : left->height;
-		int rightHeight = right == NULL ? 0 : right->height;
-		height = 1 + max(leftHeight, rightHeight);
-	}
-
-
-	// 平衡因子
-	// AVL树特有属性
-	int balanceFactor() {
-		int leftHeight = left == NULL ? 0 : left->height;
-		int rightHeight = right == NULL ? 0 : right->height;
-		return leftHeight - rightHeight;
-	}
-
-	// 最高子树
-	// 根据不平衡点得到父节点和node，进而得知是那种旋转模式。
-	// AVL树特有属性
-	Node<T>* tallerChild() {
-		int leftHeight = left == NULL ? 0 : left->height;
-		int rightHeight = right == NULL ? 0 : right->height;
-		if (leftHeight > rightHeight) return left;
-		if (leftHeight < rightHeight) return right;
-
-		return this->IsLeft() ? left : right;
-	}
-
-
-	// 判断兄弟姐妹节点存在
-	 // RBTree 特有属性
-	bool IsSibling(Node* node )
-	{
-		if (node == NULL) {
-			return false;
-		}
-		if (node->IsLeft() && node->parent->Have2Children()) return true;
-		if (node->IsRight() && node->parent->Have2Children()) return true;
-
-		return false;
-	}
-
-// 得到兄弟姐妹节点
- // RBTree 特有属性
-
-	Node* Sibling()
-	{
-		if (IsLeft()) return this->parent->right;
-		if (IsRight()) return this->parent->left;
-		return NULL;
-	}
-
-
-	// get叔父节点
-	 // RBTree 特有属性
-	Node* Uncle()
-	{
-		return parent->Sibling();
-	}
-
 };
 
+// ***********************************************************************
 
+
+
+
+//BST
 template<class T>
-class BinaryTree : protected Node<T>
+class BinarySearchTree : private Node<T>
 {
-public:
-	int m_size;
-	Node<T>* m_root;  //根节点
-	Operate m_op;  //操作器：对遍历的数据进行自定义操作
-
 
 public:
 
-	BinaryTree()
+	template<class T>
+	friend std::ostream& operator << (std::ostream& out, const BinarySearchTree<T>& bst);
+
+	BinarySearchTree()
 	{
 		m_size = 0;
 		m_root = NULL;
 	}
 
+
 	Node<T>* root()
 	{
 		return m_root;
+	}
+
+	//添加
+	void add(T Ele)
+	{
+		//添加第一个节点
+		if (m_root == NULL) {
+			Node<T>* NewNode = new Node<T>(Ele, NULL);
+			m_root = NewNode;
+			m_size++;
+			return;
+		}
+
+		int cmp = 0;
+		Node<T>* node = m_root;
+		Node<T>* parent = m_root;
+
+		while (node != NULL) {
+
+			cmp = compare(Ele, node->Element); //记录最后一次是左还是右
+			parent = node; // 记录最后一次的parent节点
+			if (cmp > 0) {
+				node = node->right;
+			}
+			else if (cmp < 0) {
+				node = node->left;
+			}
+			else {
+				node->Element = Ele;
+				return;
+			}
+		}
+
+		//循环完毕后node是null，parent是最后一次的节点，cmp是最后一次比较的结果
+
+		Node<T>* NewNode = new Node<T>(Ele, parent);
+		if (cmp > 0) {
+			parent->right = NewNode;
+		}
+		else if (cmp < 0) {
+			parent->left = NewNode;
+		}
+		m_size++;
+
+	}
+
+	//删除
+
+
+	//搜索
+
+	bool Contains(T Ele)
+	{
+		return node(Ele) != NULL;
+	}
+
+
+	// 查找
+	Node<T>* node(T Ele)
+	{
+		Node<T>* node = this->m_root;
+
+		while (node != NULL)
+		{
+			int cmp = compare(Ele, node->Element);
+
+			if (cmp == 0) return node;
+			if (cmp < 0) {
+				node = node->left;
+			}
+			else {
+				node = node->right;
+			}
+		}
+		return NULL;
+	}
+
+
+	Node<T>* BSTSearch(Node<T>* node,T data) {
+		int cmp = compare(data, node->Element);
+		if (node == NULL || cmp == 0) {
+			return node;
+		}
+		else {
+			if (cmp > 0) {
+				BSTSearch(node->right, data);
+			}
+			else {
+				BSTSearch(node->left, data);
+			}
+		}
 	}
 
 
@@ -291,41 +313,36 @@ public:
 	{
 		if (node == NULL) return;
 
-		inorderTraversal(node->left, v);
-
+		inorderTraversal(node->left,v);
+		
 		v.push_back(node);
 
-		inorderTraversal(node->right, v);
+		inorderTraversal(node->right,v);
 	}
 
 	//**层序遍历**//
-	void PrintNodeByLevel()
-	{
-		PrintNodeByLevel(m_root);
-	}
+	void PrintNodeByLevel() {
 
-	void PrintNodeByLevel(Node<T>* rnode) {
-		if (rnode == NULL) {
+		if (m_root == NULL) {
 			cout << "空树！" << endl;
 			return;
 		}
-
 		vector<Node<T>*> intv;
 
-		inorderTraversal(rnode, intv);//中序遍历节点数组
+		inorderTraversal(m_root, intv);//中序遍历节点数组
 		string template_str;//模板string，表示每行打印string的长度
-
+		
 		int location = 0;
 
 		typedef unordered_map<Node<T>*, int> hashmap;
 		hashmap first_locations;//存储节点对应在本行string中的首位置
-
-
+		
+		
 		for (auto& i : intv) {
 
 			location = template_str.size();
 
-			template_str += to_string(i->Element) + "    ";
+			template_str += to_string(i->Element) + "    " ;
 
 			first_locations[i] = location;
 		}
@@ -336,17 +353,14 @@ public:
 
 		//层序遍历
 		queue<Node<T>*> q;
-		q.push(rnode);
+		q.push(m_root);
 
 		while (!q.empty()) {
 
 			int currentLevelSize = q.size();
 			int cur_loc = 0;
 
-			string tmp_str1 = template_str, tmp_str2 = template_str,
-				tmp_str3 = template_str,
-				tmp_str4 = template_str,
-				tmp_str5 = template_str;//1为节点所在行，2为其下一行
+			string tmp_str1 = template_str, tmp_str2 = template_str;//1为节点所在行，2为其下一行
 
 
 			for (int i = 1; i <= currentLevelSize; ++i) {
@@ -356,15 +370,10 @@ public:
 				cur_loc = first_locations[node];
 
 				// 父节点信息
-				string addmessage1 = node->parent ? to_string(node->parent->Element) : "null";
-				string addmessage2 = to_string(hight(node));
-				string addmessage3 = to_string(node->balanceFactor());
-				string addmessage4 = node->color ? "黑" : "红";  // 大离谱了，我竟然把黑红写反了，找bug找了两个小时
-				string num_str = to_string(node->Element);
-				//string appendMessage1 =	"P[" + addmessage1 + "]";
-				//string appendMessage1 = "H{" + addmessage2 + "}";
-				 //string appendMessage1 = "B:" + addmessage3 ;
-				string appendMessage1 = addmessage4;
+				string addmessage = node->parent ? to_string(node->parent->Element) : "null";
+
+				string num_str = to_string(node->Element) 
+					+ "(" + addmessage + ")";
 
 
 				//左边，如果存在左孩子，那么在第二行对应位置打印'/'，在第一行补上'_'
@@ -372,48 +381,26 @@ public:
 					q.push(node->left);
 
 					int first_loc = first_locations[node->left] + 1;
-					tmp_str2[first_loc - 1] = '/';
-					tmp_str3[first_loc] = '/';
-					//tmp_str4[first_loc -1] = '/';
-					//tmp_str5[first_loc -2] = '/';
-					first_loc++;
-
-					while (first_loc < cur_loc)
+					tmp_str2[first_loc++] = '/';
+					
+					while (first_loc < cur_loc )
 						tmp_str1[first_loc++] = '_';
 				}
 
 
-				//			中间,对应位置打印节点值（有可能为多位数）
-				int temploc = cur_loc;
+	//			中间,对应位置打印节点值（有可能为多位数）
 				for (int j = 0; j < num_str.length(); ++j) {
 					tmp_str1[cur_loc++] = num_str[j];
 				}
 
-				for (int j = 0; j < appendMessage1.length(); ++j) {
-					tmp_str3[temploc] = appendMessage1[j];
-					temploc++;
-				}
 
-				/*	for (int j = 0; j < appendMessage2.length(); ++j, temploc++) {
-						tmp_str4[temploc] = appendMessage2[j];
-					}
-					for (int j = 0; j < appendMessage3.length(); ++j, temploc++) {
-						tmp_str5[temploc] = appendMessage3[j];
-					}*/
-
-
-					//右边，如果存在右孩子，那么在第二行对应位置打印'\'，在第一行补上'_'
+				//右边，如果存在右孩子，那么在第二行对应位置打印'\'，在第一行补上'_'
 				if (node->right) {
 					q.push(node->right);
 
 					int last_loc = first_locations[node->right] - 1;
+					tmp_str2[last_loc] = '\\';
 
-					tmp_str2[last_loc + 1] = '\\';
-					tmp_str3[last_loc] = '\\';
-					//tmp_str4[last_loc + 1] = '\\';
-					//tmp_str5[last_loc + 2] = '\\';
-
-					//last_loc++;
 					while (cur_loc < last_loc) {
 						tmp_str1[cur_loc++] = '_';
 					}
@@ -421,10 +408,9 @@ public:
 
 			}
 
+
+			//打印两行
 			std::cout << tmp_str1 << std::endl;
-			std::cout << tmp_str3 << std::endl;
-			//std::cout << tmp_str4 << std::endl;
-			//std::cout << tmp_str5 << std::endl;
 			std::cout << tmp_str2 << std::endl;
 		}
 	}
@@ -648,4 +634,134 @@ public:
 
 	}
 
+	// 删除节点
+
+	void remove(T ele) {
+
+		if (BSTSearch(m_root, ele) == NULL) return;
+
+		remove(BSTSearch(m_root, ele));
+	}
+
+
+	// 	***用于删除度为1和度为0的节点
+	void remove1(Node<T>* node) {
+
+		Node<T>* replacement = (node->left != NULL ? node->left : node->right);
+
+		if (replacement != NULL) { // node是度为1的节点
+
+			// 更改parent
+			replacement->parent = node->parent;
+
+			// 更改parent的left、right的指向
+			if (node->parent == NULL) {  // node是度为1的节点并且是根节点
+				delete node;
+				node = replacement;
+			}
+			else if (node == node->parent->left) {
+				node->parent->left = replacement;
+				delete node;
+				node = NULL;
+			}
+			else { // node == node.parent.right
+				node->parent->right = replacement;
+				delete node;
+				node = NULL;
+			}
+
+		}
+		else if (node->parent == NULL) { // node是叶子节点并且是根节点
+			delete node;
+			node = NULL;
+		}
+		else if (node == node->parent->left) {
+			node->parent->left = NULL;
+			delete node;
+			node = NULL;
+		}
+		else { // node == node.parent.right
+			node->parent->right = NULL;
+			delete node;
+			node = NULL;
+		}
+
+		m_size--;
+	}
+
+	// 度为2的节点预处理
+	void remove(Node<T>* node) {
+
+		if (node->Have2Children())  // 删除两度点： 替换元素，等价为删除1/0度点
+		{
+			Node<T>* prenode = predecessor(node);  // 删除两度点时候用前驱节点替代
+			node->Element = prenode->Element;
+			remove1(prenode);    // 注意，不可node = prenode
+		}
+		else  remove1(node);
+
+	}
+
+
+		//if (node->IsLeaf()) {  // 删除0度点
+
+		//	if (node->parent == NULL)
+		//	{
+		//		delete m_root;   // 删除单独根节点
+		//		m_root = NULL;
+		//		return temp;
+
+		//	} else if (node->parent->left == node) {  // 删除的节点是左节点
+
+		//		node->parent->left = deleNode;
+
+		//	} else {  // 删除的节点是右节点
+
+		//		node->parent->right = deleNode;
+
+		//	}
+
+		//	node->parent = NULL;
+		//	
+		//}
+		//else { // 一度节点
+		//	if (node->parent == NULL) {
+		//	
+		//		m_root = deleNode;
+		//		deleNode->parent = NULL;
+
+		//	}
+
+		//	else if (node->parent->left = node) {
+
+		//		node->parent->left = deleNode;
+		//		deleNode->parent = node->parent;
+		//	
+		//	}
+		//	else {
+
+		//		node->parent->right = deleNode;
+		//		deleNode->parent = node->parent;
+
+		//	}
+		//}
+		//delete node;
+		//node = NULL;
+		//m_size--;
+
+private:
+
+	int m_size;
+	Node<T>* m_root;  //根节点
+
+	Operate m_op;  //操作器：对遍历的数据进行自定义操作
+	Compare compare;  //比较器：实现不同类型数据的比较操作
 };
+
+
+template<class T>
+std::ostream& operator << (std::ostream& out, BinarySearchTree<T>& bst)
+{
+	bst.PrintTree(out);
+	return out;
+}

@@ -6,9 +6,6 @@
 #include <algorithm> 
 #include<vector>
 #include<unordered_map>
-#define RED false
-#define BLACK true
-
 using namespace std;
 
 template<class T>
@@ -20,13 +17,9 @@ public:
 	Node* left;
 	Node* right;
 	Node* parent;
+	int height = 1;
 
-	int height = 1;  // AVL树特有属性
-
-
-	bool color = RED;  // RBTree 特有属性
-
-	Node() { }
+	Node() {}
 
 	Node(T ele, Node* parent = NULL) :Element(ele), parent(parent)
 	{
@@ -56,8 +49,7 @@ public:
 	}
 
 	// 更新高度
-	// AVL树特有属性
-	void updateHeight() {  
+	void updateHeight() {
 		int leftHeight = left == NULL ? 0 : left->height;
 		int rightHeight = right == NULL ? 0 : right->height;
 		height = 1 + max(leftHeight, rightHeight);
@@ -65,7 +57,7 @@ public:
 
 
 	// 平衡因子
-	// AVL树特有属性
+
 	int balanceFactor() {
 		int leftHeight = left == NULL ? 0 : left->height;
 		int rightHeight = right == NULL ? 0 : right->height;
@@ -74,7 +66,6 @@ public:
 
 	// 最高子树
 	// 根据不平衡点得到父节点和node，进而得知是那种旋转模式。
-	// AVL树特有属性
 	Node<T>* tallerChild() {
 		int leftHeight = left == NULL ? 0 : left->height;
 		int rightHeight = right == NULL ? 0 : right->height;
@@ -82,38 +73,6 @@ public:
 		if (leftHeight < rightHeight) return right;
 
 		return this->IsLeft() ? left : right;
-	}
-
-
-	// 判断兄弟姐妹节点存在
-	 // RBTree 特有属性
-	bool IsSibling(Node* node )
-	{
-		if (node == NULL) {
-			return false;
-		}
-		if (node->IsLeft() && node->parent->Have2Children()) return true;
-		if (node->IsRight() && node->parent->Have2Children()) return true;
-
-		return false;
-	}
-
-// 得到兄弟姐妹节点
- // RBTree 特有属性
-
-	Node* Sibling()
-	{
-		if (IsLeft()) return this->parent->right;
-		if (IsRight()) return this->parent->left;
-		return NULL;
-	}
-
-
-	// get叔父节点
-	 // RBTree 特有属性
-	Node* Uncle()
-	{
-		return parent->Sibling();
 	}
 
 };
@@ -299,7 +258,7 @@ public:
 	}
 
 	//**层序遍历**//
-	void PrintNodeByLevel()
+	void PrintNodeByLevel( )
 	{
 		PrintNodeByLevel(m_root);
 	}
@@ -344,9 +303,9 @@ public:
 			int cur_loc = 0;
 
 			string tmp_str1 = template_str, tmp_str2 = template_str,
-				tmp_str3 = template_str,
-				tmp_str4 = template_str,
-				tmp_str5 = template_str;//1为节点所在行，2为其下一行
+				   tmp_str3 = template_str,
+				   tmp_str4 = template_str,
+				   tmp_str5 = template_str;//1为节点所在行，2为其下一行
 
 
 			for (int i = 1; i <= currentLevelSize; ++i) {
@@ -359,12 +318,11 @@ public:
 				string addmessage1 = node->parent ? to_string(node->parent->Element) : "null";
 				string addmessage2 = to_string(hight(node));
 				string addmessage3 = to_string(node->balanceFactor());
-				string addmessage4 = node->color ? "黑" : "红";  // 大离谱了，我竟然把黑红写反了，找bug找了两个小时
+
 				string num_str = to_string(node->Element);
 				//string appendMessage1 =	"P[" + addmessage1 + "]";
-				//string appendMessage1 = "H{" + addmessage2 + "}";
+				string appendMessage1 = "H{" + addmessage2 + "}";
 				 //string appendMessage1 = "B:" + addmessage3 ;
-				string appendMessage1 = addmessage4;
 
 
 				//左边，如果存在左孩子，那么在第二行对应位置打印'/'，在第一行补上'_'
@@ -394,15 +352,15 @@ public:
 					temploc++;
 				}
 
-				/*	for (int j = 0; j < appendMessage2.length(); ++j, temploc++) {
-						tmp_str4[temploc] = appendMessage2[j];
-					}
-					for (int j = 0; j < appendMessage3.length(); ++j, temploc++) {
-						tmp_str5[temploc] = appendMessage3[j];
-					}*/
+			/*	for (int j = 0; j < appendMessage2.length(); ++j, temploc++) {
+					tmp_str4[temploc] = appendMessage2[j];
+				}
+				for (int j = 0; j < appendMessage3.length(); ++j, temploc++) {
+					tmp_str5[temploc] = appendMessage3[j];
+				}*/
 
 
-					//右边，如果存在右孩子，那么在第二行对应位置打印'\'，在第一行补上'_'
+				//右边，如果存在右孩子，那么在第二行对应位置打印'\'，在第一行补上'_'
 				if (node->right) {
 					q.push(node->right);
 

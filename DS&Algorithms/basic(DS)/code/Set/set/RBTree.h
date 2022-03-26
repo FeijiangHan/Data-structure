@@ -1,6 +1,6 @@
 #pragma once
-#include"BinaryTree.h"
-#include"m_compare.h"
+#include "BinaryTree.h"
+#include"Compare.h"
 #include<cmath>
 
 
@@ -37,7 +37,7 @@ public:
 	
 		while (node != NULL) {
 
-			cmp = m_compare(Ele, node->Element); //记录最后一次是左还是右
+			cmp = compare(Ele, node->Element); //记录最后一次是左还是右
 
 			parent = node; // 记录最后一次的parent节点
 			if (cmp > 0) {
@@ -86,7 +86,7 @@ public:
 
 		while (node != NULL)
 		{
-			int cmp = m_compare(Ele, node->Element);
+			int cmp = compare(Ele, node->Element);
 
 			if (cmp == 0) return node;
 			if (cmp < 0) {
@@ -101,7 +101,7 @@ public:
 
 
 	Node<T>* BSTSearch(Node<T>* node,T data) {
-		int cmp = m_compare(data, node->Element);
+		int cmp = compare(data, node->Element);
 		if (node == NULL || cmp == 0) {
 			return node;
 		}
@@ -433,5 +433,5 @@ public:
 	}
 
 private:
-	m_compare m_compare;  //比较器：实现不同类型数据的比较操作
+	Compare compare;  //比较器：实现不同类型数据的比较操作
 };

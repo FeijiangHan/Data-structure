@@ -1,5 +1,5 @@
 #pragma once
-
+#include<assert.h>
 /*
 比较函数-仿函数
 - 模板传参
@@ -17,6 +17,12 @@ public:
 	}
 
 };
+
+template<class T>
+void IsComparable(T Ele1,T Ele2) {
+	std::cout << "调用ISCOmparable" << std::endl;
+	assert(Ele1 > Ele2 || Ele1 <= Ele2);
+}
 
 
 //二叉搜索树 重载减法

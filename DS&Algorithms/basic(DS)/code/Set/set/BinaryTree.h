@@ -1,5 +1,4 @@
 #pragma once
-#include"Student.h"
 #include"Operate.h"
 #include<queue>
 #include<string>
@@ -47,7 +46,7 @@ public:
 	// 判断左右
 	bool IsLeft()
 	{
-		return (parent != NULL && this == parent->left);
+		return (Node::parent != NULL && this == parent->left);
 	}
 
 	bool IsRight()
@@ -57,7 +56,7 @@ public:
 
 	// 更新高度
 	// AVL树特有属性
-	void updateHeight() {  
+	void updateHeight() {
 		int leftHeight = left == NULL ? 0 : left->height;
 		int rightHeight = right == NULL ? 0 : right->height;
 		height = 1 + max(leftHeight, rightHeight);
@@ -87,7 +86,7 @@ public:
 
 	// 判断兄弟姐妹节点存在
 	 // RBTree 特有属性
-	bool IsSibling(Node* node )
+	bool IsSibling(Node* node)
 	{
 		if (node == NULL) {
 			return false;
@@ -98,8 +97,8 @@ public:
 		return false;
 	}
 
-// 得到兄弟姐妹节点
- // RBTree 特有属性
+	// 得到兄弟姐妹节点
+	 // RBTree 特有属性
 
 	Node* Sibling()
 	{
@@ -649,3 +648,4 @@ public:
 	}
 
 };
+
