@@ -294,3 +294,149 @@ int main()
   ```
 
   # 第k个最大值
+
+* 简单方法： 构建最大堆，求第k个最大值就把堆顶元素删除k-1次，然后堆顶的元素就是第k个最大值了。
+* 时间复杂度：建堆O(n)，删除O(klogn)
+
+```cpp
+
+void siftDown(int index, vector<int>& v)
+{
+	// 保留待下移节点的数值
+	int e = v[index];
+
+	// 有叶子节点则进行下移操作
+	int no_leaf_number = (v.size() >> 1); // 非叶子节点个数
+
+	while (index < no_leaf_number)
+	{
+		/* 注意： 移位运算符的优先级低于加法，需要加括号 */
+		int left = (index << 1) + 1;
+		int right = (index << 1) + 2;
+		int leftValue = v[left];
+		int rightValue = v[right];
+		bool cmpVal = rightValue < leftValue;
+
+		// 得到最大子节点位置和数值
+		int nextIndex = cmpVal ? left : right;
+		int maxNextVal = cmpVal ? leftValue : rightValue;
+
+		if (e >= maxNextVal) break; // e始终是原来的堆顶元素值
+		// 更新索引，覆盖数值
+		v[index] = v[nextIndex];
+		index = nextIndex;
+
+	}
+
+	v[index] = e;
+}
+
+
+void heapify(vector<int>& v)
+{
+	// 自下而上的下滤
+	// 从最后一个非叶子节点开始
+	for (int index = (v.size() >> 1) - 1; index >= 0; index--)
+	{
+		siftDown(index,v);
+	}
+}
+
+int remove(vector<int>& v) {
+
+	int m_size = v.size();
+	// 得到堆顶，用于返回
+	int deleEle = v[0];
+
+	/* size减一，为了避免最后一个元素丢失，把其复制到堆顶 */
+	v[0] = v[--m_size];
+
+	/* 现在可能造成堆顶小、两边大的格局，所以对堆顶进行下移操作*/
+	int index = 0;
+	// 只有非叶子节点才能下溢
+	siftDown(index,v);
+
+	return deleEle;
+}
+
+
+
+
+int main() {
+	vector<int> v = { 1,2,3,4,5,6,7,8,9 };
+	heapify(v);
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		remove(v);
+	}
+	cout << v[0] << endl;
+
+	system("pause");
+	return 0;
+}
+```
+
+* 简单方法2：构建最小堆，使得堆中存放k个最大值，此时堆顶为第k个最小的数
+
+```cpp
+	void replace(T Ele,vector<int>& v) {
+		if (v.size() > 0) {
+			v[0] = Ele;
+			siftDown(0);
+		}
+	}
+
+
+	/* 基于小顶堆的前k个最大值筛选 */
+	void TopK_smallHeap(vector<int>& v,vector<int>& ans, int k) {
+		for (int i = 0; i < v.size(); i++) {
+			if (m_size < k) {
+				ans.push_back(v[i]);
+                heapify(ans);
+			}
+			else if(v[i] > ans[0]) { // 不断丢掉小顶堆中最小的元素
+				replace(v[i]);  // log(n-k)
+			}
+		}
+	}
+
+
+void replace(int Ele, vector<int>& v) {
+	if (v.size() > 0) {
+		v[0] = Ele;
+		siftDown(0,v);
+	}
+}
+
+
+/* 基于小顶堆的前k个最大值筛选 */
+void TopK_smallHeap(vector<int>& v, vector<int>& ans, int k) {
+	for (int i = 0; i < v.size(); i++) {
+		if (ans.size() < k) {
+			ans.push_back(v[i]);
+		}
+		 if(ans.size() == k)
+		{
+			 heapify(ans);
+		}
+		else if (v[i] > ans[0]) { // 不断丢掉小顶堆中最小的元素
+			replace(v[i],ans);  // log(n-k)
+		}
+	}
+}
+
+
+```
+
+
+
+
+
+![image-20220330103035344](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220330103035344.png)
+
+![image-20220330103115211](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220330103115211.png)
+
+![image-20220330105720446](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220330105720446.png)
