@@ -4,9 +4,9 @@
 
 # 题目描述
 
-![image-20220412191744538](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412191744538.png)
+![image-20220412191744538](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412191744538.png)
 
-![image-20220413204150832](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413204150832.png)
+![image-20220413204150832](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413204150832.png)
 
 
 
@@ -33,13 +33,13 @@
 
   假设两个序列如图：
 
-![image-20220413203948017](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413203948017.png)
+![image-20220413203948017](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413203948017.png)
 
 
 
 下图是对应的三种可能：
 
-![image-20220413203958579](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413203958579.png)
+![image-20220413203958579](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413203958579.png)
 
 
 
@@ -71,7 +71,7 @@ int LCS2(vector<int> s1, vector<int> s2)
 }
 ```
 
-![image-20220413204730605](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413204730605.png)
+![image-20220413204730605](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413204730605.png)
 
 ## 思路二： 二维数组
 
@@ -102,7 +102,7 @@ int LCS1(vector<int> s1, vector<int> s2)
 }
 ```
 
-![image-20220413204814274](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413204814274.png)
+![image-20220413204814274](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413204814274.png)
 
 
 
@@ -286,7 +286,7 @@ int LCS2(vector<int> s1, vector<int> s2)
 
 ## 改进一：滚动二维数组
 
-![image-20220413204922704](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413204922704.png)
+![image-20220413204922704](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413204922704.png)
 
 计算dp数组任意一个位置的元素只需要用到左边、上面、左上角的三个位置的元素，而两行数组即可包含这三个元素，因此使用滚动数组实现空间压缩。
 
@@ -356,14 +356,14 @@ int LCS0(vector<int> s1, vector<int> s2)
 
   **有人认为只需要三个变量就可以求出所需要的值了，但是实际上是不行的。**
 
-![image-20220413205652089](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413205652089.png)
+![image-20220413205652089](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413205652089.png)
 
 
 
 * 这个优化类似于以前的那个公共子串问题，**至少需要一个一维数组，其长度为min{len(s1),len(s2)}，而且这个问题只能从左到右覆盖（右边变量依托于左边变量）**
 * 下面的代码实现先判断哪个序列具有最小长度，初始默认s1具有最小长度，如果实际上s2更小则会在初始时就调用LCS(s2,s1)调换位置。
 
-![image-20220413210654316](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220413210654316.png)
+![image-20220413210654316](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220413210654316.png)
 
 ```cpp
 /*

@@ -8,7 +8,7 @@ https://leetcode-cn.com/problems/maximum-subarray/
 
 
 
-![image-20220411123043015](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220411123043015.png)
+![image-20220411123043015](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220411123043015.png)
 
 
 
@@ -148,7 +148,7 @@ int maxSubArray2(vector<int> nums)
 
 leetcode_300： https://leetcode-cn.com/problems/longest-increasing-subsequence/
 
-![image-20220412154849044](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412154849044.png)
+![image-20220412154849044](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412154849044.png)
 
 #### 分析：
 
@@ -219,7 +219,7 @@ int LenthOFLIS_(vector<int> nums)
 
 ## 2.最长公共子串（二维）
 
-![image-20220411130349282](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220411130349282.png)
+![image-20220411130349282](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220411130349282.png)
 
 #### 分析
 
@@ -260,7 +260,7 @@ int LCString1(string s1, string s2)
 }
 ```
 
-![image-20220412123706218](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412123706218.png)
+![image-20220412123706218](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412123706218.png)
 
 
 
@@ -272,15 +272,15 @@ int LCString1(string s1, string s2)
 
 假设红圈就是我们选择的数组，我们要使用一行数组去求下一行的数组，求出来的新值要覆盖掉原来数组中那个位置的元素。例如下图计算出（2,1）位置的数值为1，则应该用1替代原来数组中的0；
 
-![image-20220412124104517](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412124104517.png)
+![image-20220412124104517](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412124104517.png)
 
 现在数组就变成这样了：
 
-![image-20220412124349042](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412124349042.png)
+![image-20220412124349042](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412124349042.png)
 
 然后我们像继续计算（2,2）位置的值，此时因为B ！= A ，所以就是0；计算完成后我们需要用0覆盖上面位置的1；
 
-![image-20220412124547244](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412124547244.png)
+![image-20220412124547244](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412124547244.png)
 
 然后我们计算（2,3）位置的值，此时因为B = B，所以这个值等于（1,2）的值 + 1，但是再前一步计算中（1,2）原来的值已经被（2,2）的值覆盖了，因此无法正确求出（2,3）的值。
 
@@ -361,7 +361,7 @@ int LCString(string s1, string s2)
 }
 ```
 
-![image-20220412125325010](C:\Users\29185\AppData\Roaming\Typora\typora-user-images\image-20220412125325010.png)
+![image-20220412125325010](https://cdn.jsdelivr.net/gh/hanfeijiang/CS-Sources/img/image-20220412125325010.png)
 
 如图，从右到左覆盖是一个非常好的方法。假设（2,5）、（2，4）已经覆盖了数组最后两个位置，接下来计算（2,3）时需要用到(1,2)的值，因为是从右到左覆盖数组，所以（1,2）的值还存在数组中，可以正确求出（2,3）的值。
 
@@ -479,7 +479,6 @@ int LCString1(string s1, string s2)
 7. 接第6步，如果使用递归，则需要两个函数求解，一个函数负责递归计算dp，一个负责调用递归
 8. 画出一维或者二维图，正向或反向推导，考虑前驱关系，进行空间的优化： **一维数组变单个变量，二维数组变一维数组，反向覆盖，滑动数组**
 9. **连续性dp数组的定义：以。。为结尾的最值**
-
 
 
 
